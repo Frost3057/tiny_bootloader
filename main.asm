@@ -74,7 +74,7 @@ print:
     mov sp,bp
     pop bp
     ret
-
+;these two lines are used for padding the 510 bytes to maintain the boot signature.
 times 510-(\$-$$) db 0
 dw 0xAA55
 
