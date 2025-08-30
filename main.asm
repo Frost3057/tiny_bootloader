@@ -8,17 +8,22 @@ start:
     mov sp,0x2000
 
 clearscreen:
-    push bp
-    mov bp,sp
-    pusha
+;Overhead :
+    push bp ;we are saving the caller's base pointer
+    mov bp,sp ;and now we are updating the base pointer with a stack pointer
+    pusha ;push all the register on the stack
+;code:
     mov ah,0x07 ;this tells the bios to scroll the window down
     mov al,0x00;clear the entire window
     mov cx,0x00; tells that the top left of the screen starts from (0,0)
     mov dh,0x18 ;18h = 24 rows of chars
     mov dl,0x4f ;4fh = 79 cols of chars
-
-    popa 
+    int 0x10 ;calls video interrupt
+;Overhead : 
+    ;mirroring the process that we did in the first overhead.
+    popa ;pop all the registers of the stack
     mov sp,bp
     ret
-    
+
+
 
