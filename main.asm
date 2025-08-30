@@ -23,7 +23,22 @@ clearscreen:
     ;mirroring the process that we did in the first overhead.
     popa ;pop all the registers of the stack
     mov sp,bp
+    pop bp
     ret
+movecursor:
+    push bp
+    mov bp,sp
+    pusha
+
+    mov dx, [bp+4] ; get the arguement from the stack.
+    mov ah, 0x02 ;set cursor position
+    mov bh, 0x00 ;page - 0 =>doesn't matter for now as we are not using double buffer
+
+    popa
+    mov sp,bp
+    pop bp
+    ret
+
 
 
 
