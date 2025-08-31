@@ -1,7 +1,7 @@
 bits 16
 ;the bootloader loads its data from the rom to ram at position 0x7c0
 mov ax,0x7C0
-mov ds,as
+mov ds,ax
 ;the stack segment starts just after the boot segment which is of 512 bytes.
 mov ax,0x7E0
 mov ss,ax
@@ -29,6 +29,7 @@ clearscreen:
 ;code:
     mov ah,0x07 ;this tells the bios to scroll the window down
     mov al,0x00;clear the entire window
+    mov bh,0x07
     mov cx,0x00; tells that the top left of the screen starts from (0,0)
     mov dh,0x18 ;18h = 24 rows of chars
     mov dl,0x4f ;4fh = 79 cols of chars
@@ -47,6 +48,7 @@ movecursor:
     mov dx, [bp+4] ; get the arguement from the stack.
     mov ah, 0x02 ;set cursor position
     mov bh, 0x00 ;page - 0 =>doesn't matter for now as we are not using double buffer
+    int 0x10
 
     popa
     mov sp,bp
@@ -61,7 +63,7 @@ print:
     mov si,[bp+4] ;get pointer to the data
     mov bh,0x00 ;page number,not required here
     mov bl,0x00 ;foreground color
-    mov ah,0x0eh ;print char to ttv
+    mov ah,0x00E ;print char to ttv
 .char:
     mov al,[si] ;get the character from the index
     add si,1
@@ -75,6 +77,5 @@ print:
     pop bp
     ret
 ;these two lines are used for padding the 510 bytes to maintain the boot signature.
-times 510-(\$-$$) db 0
+times 510-($-$$) db 0
 dw 0xAA55
-
